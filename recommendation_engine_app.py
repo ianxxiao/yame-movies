@@ -9,6 +9,7 @@ from config import MINI_DATASET_URL
 @st.cache
 def get_data():
     if not os.path.isfile('./data/mini_dataset.zip'):
+        os.mkdir('./data')
         urllib.request.urlretrieve(MINI_DATASET_URL, './data/mini_dataset.zip')
     links = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/links.csv'))
     movies = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/movies.csv'))
