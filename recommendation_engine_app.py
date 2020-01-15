@@ -18,13 +18,26 @@ def get_data():
 
 
 def main():
-    st.title("Yet Another Movie Recommender")
-    exploration = st.slider("Exploration", 0.0, 1.0, step=0.1)
     links, movies, ratings = get_data()
-    st.dataframe(links.head())
-    st.dataframe(movies.head())
-    st.dataframe(ratings.head())
 
+    st.title("Yet Another Movie Recommender")
+
+    st.subheader("Which movies do you like?")
+    moive_1 = st.checkbox(movies['title'].sample(n=1).values[0], key=1)
+    moive_2 = st.checkbox(movies['title'].sample(n=1).values[0], key=2)
+    moive_3 = st.checkbox(movies['title'].sample(n=1).values[0], key=3)
+    moive_4 = st.checkbox(movies['title'].sample(n=1).values[0], key=4)
+    moive_5 = st.checkbox(movies['title'].sample(n=1).values[0], key=5)
+
+    st.subheader("How adventurous do you feel today?")
+    exploration = st.slider("2 means you want something unexpected", min_value=0.0, max_value=2.0, step=0.1)
+
+    st.subheader("I think you may like these movies ...")
+    reco_moive_1 = st.text(movies['title'].sample(n=1).values[0])
+    reco_moive_2 = st.text(movies['title'].sample(n=1).values[0])
+    reco_moive_3 = st.text(movies['title'].sample(n=1).values[0])
+    reco_moive_4 = st.text(movies['title'].sample(n=1).values[0])
+    reco_moive_5 = st.text(movies['title'].sample(n=1).values[0])
 
 if __name__ == '__main__':
     main()
