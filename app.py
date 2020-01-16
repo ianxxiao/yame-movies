@@ -8,7 +8,12 @@ from config import MINI_DATASET_URL
 
 
 def isin_genres(df, selected_genres):
-    df = df.apply(lambda x: 1 if (x >= selected_genres) else 0)
+    # filter dataframe if there is user input criteria; default to 1 if not.
+
+    if selected_genres:
+        df = df.apply(lambda x: 1 if (x >= selected_genres) else 0)
+    else:
+        df = 1
 
     return df
 
@@ -84,32 +89,24 @@ def main():
     add_genre_selector = st.sidebar.multiselect(label="Select the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
-    # Display Data
     st.subheader(f"Here are {add_selectbox} movies between {add_year_selector[0]} and {add_year_selector[1]}")
 
-    # Default to all Genres
-    if not add_genre_selector:
-        try:
-            st.table(p_movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
-                                                       (p_movies['year'] <= add_year_selector[1])]
-                                                .sample(int(add_selectbox)))
+    # Filter Data
+    data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
+                (p_movies['year'] <= add_year_selector[1]) &
+                (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]\
+        .sample(int(add_selectbox))\
+        .sort_values("year", ascending=False)\
+        .reset_index()
 
-        except ValueError:
-            st.write(f"Not enough results. Here are all.")
-            st.table(p_movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
-                                                       (p_movies['year'] <= add_year_selector[1])])
+    try:
+        st.table(data[['title', 'genres']])
 
-    else:
-        try:
-            st.table(movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
-                                                     (p_movies['year'] <= add_year_selector[1]) &
-                                                     (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]
-                     .sample(int(add_selectbox)))
-        except ValueError:
-            st.write(f"Not enough results. Here are all.")
-            st.table(movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
-                                                     (p_movies['year'] <= add_year_selector[1]) &
-                                                     (isin_genres(p_movies['genres_set'], set(add_genre_selector)))])
+    except ValueError:
+        st.write(f"Not enough results. Here are all.")
+        st.table(data[['title', 'genres']])
+
+    st.button("Show Another Set")
 
 
 if __name__ == '__main__':
