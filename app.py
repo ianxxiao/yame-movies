@@ -8,7 +8,6 @@ from config import MINI_DATASET_URL
 
 
 def isin_genres(df, selected_genres):
-
     df = df.apply(lambda x: 1 if (x >= selected_genres) else 0)
 
     return df
@@ -48,12 +47,10 @@ def get_data():
     return links, movies, ratings
 
 
-@st.cache
 def get_min_max_year(year):
     return [int(year.min()), int(year.max())]
 
 
-@st.cache
 def get_genre_set(genres):
     genre_list = []
 
@@ -89,24 +86,27 @@ def main():
 
     # Display Data
     st.subheader(f"Here are {add_selectbox} movies between {add_year_selector[0]} and {add_year_selector[1]}")
+
+    # Default to all Genres
     if not add_genre_selector:
         try:
             st.table(p_movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
-                                                     (p_movies['year'] <= add_year_selector[1])]
+                                                       (p_movies['year'] <= add_year_selector[1])]
                                                 .sample(int(add_selectbox)))
+
         except ValueError:
-            st.write("Not enough movies, here are all.")
+            st.write(f"Not enough results. Here are all.")
             st.table(p_movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
-                                                     (p_movies['year'] <= add_year_selector[1])])
+                                                       (p_movies['year'] <= add_year_selector[1])])
 
     else:
         try:
             st.table(movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
                                                      (p_movies['year'] <= add_year_selector[1]) &
                                                      (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]
-                                                .sample(int(add_selectbox)))
+                     .sample(int(add_selectbox)))
         except ValueError:
-            st.write("Not enough movies, here are all.")
+            st.write(f"Not enough results. Here are all.")
             st.table(movies[["title", "genres"]].loc[(p_movies['year'] >= add_year_selector[0]) &
                                                      (p_movies['year'] <= add_year_selector[1]) &
                                                      (isin_genres(p_movies['genres_set'], set(add_genre_selector)))])
