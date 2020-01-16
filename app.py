@@ -5,6 +5,7 @@ from zipfile import ZipFile
 import urllib.request, os
 from functions.recommendation import find_recommendation
 from config import MINI_DATASET_URL
+from youtube_search import YoutubeSearch
 
 
 def isin_genres(df, selected_genres):
@@ -26,6 +27,11 @@ def cast_int(value):
     return value
 
 
+def make_clickable(title):
+    search_str = 'http://www.google.com'
+    return f'<a href="{search_str}">{title}</a>'
+
+
 def process_data(links, movies, ratings):
     # Process Movie Data
     movies['year'] = movies['title'].apply(lambda x: x.split('(')[-1]
@@ -33,6 +39,8 @@ def process_data(links, movies, ratings):
     movies['genres'] = movies['genres'].replace("(no genres listed)", None)
 
     movies['genres_set'] = movies['genres'].apply(lambda x: set(x.split("|")))
+
+    movies['clickable_title'] = movies['title'].apply(lambda x: make_clickable(x))
 
     return links, movies, ratings
 
@@ -66,6 +74,9 @@ def get_genre_set(genres):
             genre_list.append(i)
 
     return np.unique(genre_list)
+
+def make_clickable(val):
+    return '<a href="{}">{}</a>'.format(val,val)
 
 
 def main():
@@ -107,6 +118,11 @@ def main():
         st.table(data[['title', 'genres']])
 
     st.button("Show Another Set")
+
+    for title in data['title']:
+        search_term = title + "trailer"
+        results = YoutubeSearch(title, max_results=1).to_dict()
+        st.video('https://www.youtube.com'+results[0]['link'])
 
 
 if __name__ == '__main__':

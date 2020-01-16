@@ -1,3 +1,4 @@
 streamlit==0.53.0
 pandas==0.25.3
 Google-Images-Search==1.0.1
+youtube-search==0.1.3
