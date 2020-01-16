@@ -9,7 +9,7 @@ from config import MINI_DATASET_URL
 
 def isin_genres(df, selected_genres):
 
-    df = df.apply(lambda x: 1 if (x <= selected_genres) else 0)
+    df = df.apply(lambda x: 1 if (x >= selected_genres) else 0)
 
     return df
 
