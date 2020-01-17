@@ -82,7 +82,7 @@ def main():
     p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
 
     # Set Up the Layout
-    st.title("YouTube & Chill")
+    st.title("Yet Another Movie Recommender")
 
     add_year_selector = st.sidebar.slider(label="Select Year Range",
                                           min_value=get_min_max_year(p_movies.year)[0],
