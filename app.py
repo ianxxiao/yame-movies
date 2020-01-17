@@ -75,9 +75,6 @@ def get_genre_set(genres):
 
     return np.unique(genre_list)
 
-def make_clickable(val):
-    return '<a href="{}">{}</a>'.format(val,val)
-
 
 def main():
     # Load Data
@@ -85,28 +82,25 @@ def main():
     p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
 
     # Set Up the Layout
-    st.title("Yet Another Movie Recommender")
-
-    add_selectbox = st.sidebar.selectbox("Number of Movie to Show",
-                                         (5, 10, 20))
+    st.title("YouTube & Chill")
 
     add_year_selector = st.sidebar.slider(label="Select Year Range",
                                           min_value=get_min_max_year(p_movies.year)[0],
                                           max_value=get_min_max_year(p_movies.year)[1],
-                                          value=(get_min_max_year(p_movies.year)[0] + 20,
-                                                 get_min_max_year(p_movies.year)[1] - 20),
+                                          value=(get_min_max_year(p_movies.year)[1] - 20,
+                                                 get_min_max_year(p_movies.year)[1]),
                                           step=1)
 
     add_genre_selector = st.sidebar.multiselect(label="Select the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
-    st.subheader(f"Here are {add_selectbox} movies between {add_year_selector[0]} and {add_year_selector[1]}")
+    st.subheader(f"Here are 5 movies between {add_year_selector[0]} and {add_year_selector[1]}")
 
     # Filter Data
     data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
                 (p_movies['year'] <= add_year_selector[1]) &
                 (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]\
-        .sample(int(add_selectbox))\
+        .sample(int(5))\
         .sort_values("year", ascending=False)\
         .reset_index()
 
@@ -117,12 +111,14 @@ def main():
         st.write(f"Not enough results. Here are all.")
         st.table(data[['title', 'genres']])
 
-    st.button("Show Another Set")
+    st.button("Show 5 Other Movies", key=1)
 
     for title in data['title']:
         search_term = title + "trailer"
         results = YoutubeSearch(title, max_results=1).to_dict()
         st.video('https://www.youtube.com'+results[0]['link'])
+
+    st.button("Show 5 Other Movies", key=2)
 
 
 if __name__ == '__main__':
