@@ -91,7 +91,7 @@ def main():
                     )
         st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
         st.markdown("You can refine the suggesions using the panel on the left :point_left:")
-
+        st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/).")
     add_year_selector = st.sidebar.slider(label="Pick the Year",
                                           min_value=get_min_max_year(p_movies.year)[0],
                                           max_value=get_min_max_year(p_movies.year)[1],
