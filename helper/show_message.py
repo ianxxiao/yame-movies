@@ -8,11 +8,11 @@ def show_header_message():
                      They create an echo chamber. \
                      They make you watch the same boring videos, over and over. :zzz:"
                     )
-        st.markdown("Instead, YAME's algorithm takes you on a journey. YAME makes entertainment fun, again. :fire:")
+        st.markdown("Instead, YAME's algorithm takes you on a journey. YAME makes entertainment exciting, again. :fire:")
         st.markdown("Click the arrow on the left to refine your suggestions :arrow_forward:")
         st.markdown("**Like YAME?** \
                     [Sign up](https://docs.google.com/forms/d/e/1FAIpQLSf9bL0StMXnjjfSlhgekbMFJNw5okT2bpFUqfO-O8dAbPfKCw/viewform?usp=sf_link) to receive weekly suggestions. \
-                     Follow us on [Instagram](https://www.instagram.com/yamr_movie/). \
+                     Follow us on [Instagram](https://www.instagram.com/yame_movies/). \
                      Save YAME to your phone so you can use it anytime like any other app. :iphone:")
 
         image = Image.open("./asset/save_to_phone.jpeg")
@@ -29,7 +29,7 @@ def show_foot_message():
     st.markdown("* * *")
     st.markdown("**Like YAME?** \
                 [Sign up](https://docs.google.com/forms/d/e/1FAIpQLSf9bL0StMXnjjfSlhgekbMFJNw5okT2bpFUqfO-O8dAbPfKCw/viewform?usp=sf_link) to receive weekly suggestions. \
-                Follow us on [Instagram](https://www.instagram.com/yamr_movie/). Save YAME to your phone. :iphone:")
+                Follow us on [Instagram](https://www.instagram.com/yame_movies/). Save YAME to your phone. :iphone:")
     st.markdown("_YAME is built by Ian Xiao. \
                 You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                 [Medium](https://medium.com/@ianxiao), \
