@@ -117,12 +117,17 @@ def main():
     st.subheader(f"5 Movies from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
 
     # Filter Data
-    data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
-                (p_movies['year'] <= add_year_selector[1]) &
-                (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]\
-        .sample(5)\
-        .sort_values("year", ascending=False)\
-        .reset_index()
+    try:
+        data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
+                    (p_movies['year'] <= add_year_selector[1]) &
+                    (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]\
+            .sample(5)\
+            .sort_values("year", ascending=False)\
+            .reset_index()
+
+    except ValueError:
+        st.text("Hmm. Can't find any movie according to your selection. Here are some other movies you may like.")
+        data = p_movies.sample(5)
 
     try:
         st.table(data[['title', 'genres']])
