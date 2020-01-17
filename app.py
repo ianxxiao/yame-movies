@@ -9,7 +9,7 @@ from helper.data_processing import process_data
 from helper.lookup import get_min_max_year, get_genre_set, isin_genres
 
 
-@st.cache
+@st.cache(persist=True)
 def get_data():
 
     # Create directory and downlaod data if not exist
