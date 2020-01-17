@@ -77,12 +77,20 @@ def get_genre_set(genres):
 
 
 def main():
+
     # Load Data
     links, movies, ratings = get_data()
     p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
 
     # Set Up the Layout
     st.title("Yet Another Movie Recommender")
+    if st.button("About YAMR"):
+        st.markdown("YAMR is **Y**et **A**nother **M**ovie **R**ecommender. YouTube (or Netflix) algorithms suck! \
+                    They create an echo chamber. \
+                    They make you watch the same boring videos, over and over. :zzz:"
+                    )
+        st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
+        st.markdown("You can refine the suggesions using the panel on the left :point_left:")
 
     add_year_selector = st.sidebar.slider(label="Pick the Year",
                                           min_value=get_min_max_year(p_movies.year)[0],
@@ -94,7 +102,7 @@ def main():
     add_genre_selector = st.sidebar.multiselect(label="Pick the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
-    st.subheader(f"Your Movie Suggestions from {add_year_selector[0]} to {add_year_selector[1]}")
+    st.subheader(f"5 Movies Picked from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
 
     # Filter Data
     data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
@@ -111,7 +119,7 @@ def main():
         st.write(f"Not enough results. Here are all.")
         st.table(data[['title', 'genres']])
 
-    st.button("Show Something Else", key=1)
+    st.button("Meh. Show Me Something Else.", key=1)
 
     st.subheader("Movie Trailers")
     for title in data['title']:
@@ -119,7 +127,7 @@ def main():
         results = YoutubeSearch(title, max_results=1).to_dict()
         st.video('https://www.youtube.com'+results[0]['link'])
 
-    st.button("Show Something Else", key=2)
+    st.button("Meh. Show Me Something Else.", key=2)
 
 
 if __name__ == '__main__':
