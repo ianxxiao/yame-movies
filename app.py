@@ -47,7 +47,7 @@ def main():
     st.markdown("* * *")
     st.subheader(f"5 Movies from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
 
-    # Filter Data
+    # Filter data
     try:
         data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
                             (p_movies['year'] <= add_year_selector[1]) &
@@ -60,6 +60,7 @@ def main():
         st.text("Hmm. Can't find any movie based on your choice. Here are something else you may like.")
         data = p_movies.sample(5)
 
+    # Show data
     try:
         st.table(data[['title', 'genres']])
 
