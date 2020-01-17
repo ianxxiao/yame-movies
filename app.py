@@ -92,6 +92,11 @@ def main():
         st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
         st.markdown("You can refine the suggesions using the panel on the left :point_left:")
         st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/).")
+        st.markdown("YAMR is built by Ian Xiao. \
+                    You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
+                    [Medium](https://medium.com/@ianxiao), \
+                    and [Twitter](https://twitter.com/ian_xxiao).")
+
     add_year_selector = st.sidebar.slider(label="Pick the Year",
                                           min_value=get_min_max_year(p_movies.year)[0],
                                           max_value=get_min_max_year(p_movies.year)[1],
@@ -130,7 +135,11 @@ def main():
     st.button("Meh. Show Me Something Else.", key=2)
 
     st.markdown("* * *")
-    st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/) to Get Your Weekly Dose.")
+    st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/).")
+    st.markdown("YAMR is built by Ian Xiao. \
+                You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
+                [Medium](https://medium.com/@ianxiao), \
+                and [Twitter](https://twitter.com/ian_xxiao).")
 
 
 if __name__ == '__main__':
