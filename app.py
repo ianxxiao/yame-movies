@@ -94,7 +94,7 @@ def main():
     add_genre_selector = st.sidebar.multiselect(label="Select the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
-    st.subheader(f"Here are 5 movies between {add_year_selector[0]} and {add_year_selector[1]}")
+    st.subheader(f"Here are 5 Personalized Movie Suggestions from {add_year_selector[0]} to {add_year_selector[1]}")
 
     # Filter Data
     data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
@@ -111,14 +111,15 @@ def main():
         st.write(f"Not enough results. Here are all.")
         st.table(data[['title', 'genres']])
 
-    st.button("Show 5 Other Movies", key=1)
+    st.button("Show Something Else", key=1)
 
+    st.subheader("Movie Trailers")
     for title in data['title']:
         search_term = title + "trailer"
         results = YoutubeSearch(title, max_results=1).to_dict()
         st.video('https://www.youtube.com'+results[0]['link'])
 
-    st.button("Show 5 Other Movies", key=2)
+    st.button("Show Something Else", key=2)
 
 
 if __name__ == '__main__':
