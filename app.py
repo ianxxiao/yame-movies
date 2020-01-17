@@ -1,68 +1,45 @@
 import streamlit as st
-import pandas as pd
-from zipfile import ZipFile
-import urllib.request, os
-from config import MINI_DATASET_URL
+
 from youtube_search import YoutubeSearch
 from helper.show_message import show_header_message, show_foot_message
-from helper.data_processing import process_data, calc_movie_rating_average
+from helper.data_processing import get_data
 from helper.lookup import get_min_max_year, get_genre_set, isin_genres
-
-
-# Persist to disk so the web-app doesn't re-load when a user refresh the browser
-@st.cache(persist=True, allow_output_mutation=False)
-def get_data():
-
-    # Create directory and downlaod data if not exist
-    if not os.path.isfile('./data/mini_dataset.zip'):
-        os.mkdir('./data')
-        urllib.request.urlretrieve(MINI_DATASET_URL, './data/mini_dataset.zip')
-
-    # Load data to pandas
-    links = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/links.csv'))
-    movies = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/movies.csv'))
-    ratings = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/ratings.csv'))
-
-    p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
-    movie_rating_avg_cnt = calc_movie_rating_average(p_movies.copy(), p_rating.copy())
-
-    return p_movies, movie_rating_avg_cnt
 
 
 def main():
 
     # Load Data
-    p_movies, movie_rating_avg_cnt = get_data()
+    final_movie_df = get_data()
 
     # Set Up the Layout
     st.title("Yet Another Movie Explorer")
     show_header_message()
 
     add_year_selector = st.sidebar.slider(label="Pick the Year",
-                                          min_value=get_min_max_year(p_movies.year)[0],
-                                          max_value=get_min_max_year(p_movies.year)[1],
-                                          value=(get_min_max_year(p_movies.year)[1] - 20,
-                                                 get_min_max_year(p_movies.year)[1]),
+                                          min_value=get_min_max_year(final_movie_df.year)[0],
+                                          max_value=get_min_max_year(final_movie_df.year)[1],
+                                          value=(get_min_max_year(final_movie_df.year)[1] - 20,
+                                                 get_min_max_year(final_movie_df.year)[1]),
                                           step=1)
 
     add_genre_selector = st.sidebar.multiselect(label="Pick the Genre (default to any)",
-                                                options=get_genre_set(p_movies.genres))
+                                                options=get_genre_set(final_movie_df.genres))
 
     st.markdown("* * *")
     st.subheader(f"5 Movies from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
 
     # Filter data
     try:
-        data = p_movies.copy().loc[(p_movies['year'] >= add_year_selector[0]) &
-                            (p_movies['year'] <= add_year_selector[1]) &
-                            (isin_genres(p_movies['genres_set'], set(add_genre_selector)))] \
+        data = final_movie_df.loc[(final_movie_df['year'] >= add_year_selector[0]) &
+                            (final_movie_df['year'] <= add_year_selector[1]) &
+                            (isin_genres(final_movie_df['genres_set'], set(add_genre_selector)))] \
             .sample(5) \
             .sort_values("year", ascending=False) \
             .reset_index()
 
     except ValueError:
         st.text("Hmm. Can't find any movie based on your choice. Here are something else you may like.")
-        data = p_movies.copy().sample(5)
+        data = final_movie_df.sample(5)
 
     # Show data
     try:
@@ -80,6 +57,7 @@ def main():
         results = YoutubeSearch(search_term, max_results=1).to_dict()
         try:
             st.subheader(title)
+            st.text(data[data.title == title]['avg_rating'].values[0])
             st.video('https://www.youtube.com' + results[0]['link'])
             st.markdown("***")
 

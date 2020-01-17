@@ -1,6 +1,6 @@
 import streamlit as st
 from PIL import Image
-from config import IG_URL, GOOGLE_FORM_URL
+from helper.config import IG_URL, GOOGLE_FORM_URL
 
 def show_header_message():
     if st.button("Click to know more about YAME"):
