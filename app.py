@@ -85,13 +85,14 @@ def main():
     # Set Up the Layout
     st.title("Yet Another Movie Recommender")
     if st.button("About YAMR"):
-        st.markdown("YAMR is **Y**et **A**nother **M**ovie **R**ecommender. YouTube (or Netflix) algorithms suck! \
+        st.markdown("YAMR means **Y**et **A**nother **M**ovie **R**ecommender. \
+                    Algorithms on sites like YouTube or Netflix suck! \
                     They create an echo chamber. \
                     They make you watch the same boring videos, over and over. :zzz:"
                     )
         st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
         st.markdown("You can refine the suggesions using the panel on the left :point_left:")
-        st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/).")
+        st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/).")
         st.markdown("YAMR is built by Ian Xiao. \
                     You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                     [Medium](https://medium.com/@ianxiao), \
