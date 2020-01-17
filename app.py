@@ -6,6 +6,7 @@ import urllib.request, os
 from functions.recommendation import find_recommendation
 from config import MINI_DATASET_URL
 from youtube_search import YoutubeSearch
+from PIL import Image
 
 
 def isin_genres(df, selected_genres):
@@ -91,8 +92,12 @@ def main():
                     They make you watch the same boring videos, over and over. :zzz:"
                     )
         st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
-        st.markdown("You can refine the suggesions using the panel on the left :point_left:")
-        st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/).")
+        st.markdown("Click the arrow on the left to refine your suggestions :arrow_forward:")
+        st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/). And save this app to your phone? :heart_eyes:")
+
+        image = Image.open("./asset/save_to_phone.jpeg")
+        st.image(image)
+
         st.markdown("YAMR is built by Ian Xiao. \
                     You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                     [Medium](https://medium.com/@ianxiao), \
