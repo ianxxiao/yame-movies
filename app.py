@@ -9,6 +9,7 @@ from helper.data_processing import process_data
 from helper.lookup import get_min_max_year, get_genre_set, isin_genres
 
 
+# Persist to disk so the web-app doesn't re-load when a user refresh the browser
 @st.cache(persist=True)
 def get_data():
 
