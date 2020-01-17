@@ -5,12 +5,12 @@ import urllib.request, os
 from config import MINI_DATASET_URL
 from youtube_search import YoutubeSearch
 from helper.show_message import show_header_message, show_foot_message
-from helper.data_processing import process_data
+from helper.data_processing import process_data, calc_movie_rating_average
 from helper.lookup import get_min_max_year, get_genre_set, isin_genres
 
 
 # Persist to disk so the web-app doesn't re-load when a user refresh the browser
-@st.cache(persist=True)
+@st.cache(persist=True, allow_output_mutation=False)
 def get_data():
 
     # Create directory and downlaod data if not exist
@@ -23,13 +23,16 @@ def get_data():
     movies = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/movies.csv'))
     ratings = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/ratings.csv'))
 
-    return links, movies, ratings
+    p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
+    movie_rating_avg_cnt = calc_movie_rating_average(p_movies.copy(), p_rating.copy())
+
+    return p_movies, movie_rating_avg_cnt
 
 
 def main():
+
     # Load Data
-    links, movies, ratings = get_data()
-    p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
+    p_movies, movie_rating_avg_cnt = get_data()
 
     # Set Up the Layout
     st.title("Yet Another Movie Explorer")
@@ -50,7 +53,7 @@ def main():
 
     # Filter data
     try:
-        data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
+        data = p_movies.copy().loc[(p_movies['year'] >= add_year_selector[0]) &
                             (p_movies['year'] <= add_year_selector[1]) &
                             (isin_genres(p_movies['genres_set'], set(add_genre_selector)))] \
             .sample(5) \
@@ -59,7 +62,7 @@ def main():
 
     except ValueError:
         st.text("Hmm. Can't find any movie based on your choice. Here are something else you may like.")
-        data = p_movies.sample(5)
+        data = p_movies.copy().sample(5)
 
     # Show data
     try:
@@ -78,9 +81,11 @@ def main():
         try:
             st.subheader(title)
             st.video('https://www.youtube.com' + results[0]['link'])
+            st.markdown("***")
 
         except IndexError:
             st.text(f"Hm. We can't find any tailor for {title}. Click button below to find something else.")
+            st.markdown("***")
 
     st.button("Meh. Show Me Something Else.", key=2)
 
