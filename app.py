@@ -102,7 +102,7 @@ def main():
     add_genre_selector = st.sidebar.multiselect(label="Pick the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
-    st.subheader(f"5 Movies Picked from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
+    st.subheader(f"5 Movies from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
 
     # Filter Data
     data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
@@ -121,13 +121,16 @@ def main():
 
     st.button("Meh. Show Me Something Else.", key=1)
 
-    st.subheader("Movie Trailers")
+    st.subheader("Some Trailers")
     for title in data['title']:
         search_term = title + "trailer"
         results = YoutubeSearch(title, max_results=1).to_dict()
         st.video('https://www.youtube.com'+results[0]['link'])
 
     st.button("Meh. Show Me Something Else.", key=2)
+
+    st.markdown("* * *")
+    st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/) to Get Your Weekly Dose.")
 
 
 if __name__ == '__main__':
