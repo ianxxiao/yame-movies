@@ -7,7 +7,7 @@ from helper.data_processing import process_data, join_data, calc_movie_rating_av
 
 
 # Persist to disk so the web-app doesn't re-load when a user refresh the browser
-@st.cache(persist=True)
+@st.cache(persist=True, allow_output_mutation=False)
 def get_data():
 
     # Create directory and downlaod data if not exist
@@ -21,15 +21,15 @@ def get_data():
     ratings = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/ratings.csv'))
 
     p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
-    movie_rating_avg_cnt = calc_movie_rating_average(p_movies, p_rating)
+    movie_rating_avg_cnt = calc_movie_rating_average(p_movies.copy(), p_rating.copy())
 
-    return p_movies, movie_rating_avg_cnt
+    return p_links, p_movies, p_rating, movie_rating_avg_cnt
 
 
 def main():
 
     # Load Data
-    p_movies, movie_rating_avg_cnt = get_data()
+    p_links, p_movies, p_rating, movie_rating_avg_cnt = get_data()
 
     # display Data
     st.write("p_movies")
