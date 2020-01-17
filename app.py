@@ -94,7 +94,7 @@ def main():
     add_genre_selector = st.sidebar.multiselect(label="Select the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
-    st.subheader(f"Here are 5 Personalized Movie Suggestions from {add_year_selector[0]} to {add_year_selector[1]}")
+    st.subheader(f"Your Movie Suggestions from {add_year_selector[0]} to {add_year_selector[1]}")
 
     # Filter Data
     data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
