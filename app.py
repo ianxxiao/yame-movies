@@ -84,21 +84,21 @@ def main():
     p_links, p_movies, p_rating = process_data(links.copy(), movies.copy(), ratings.copy())
 
     # Set Up the Layout
-    st.title("Yet Another Movie Recommender")
-    if st.button("About YAMR"):
-        st.markdown("YAMR means **Y**et **A**nother **M**ovie **R**ecommender. \
+    st.title("Yet Another Movie Explorer")
+    if st.button("About YAME"):
+        st.markdown("YAME means **Y**et **A**nother **M**ovie **E**xplorer. \
                     Algorithms on sites like YouTube or Netflix suck! \
                     They create an echo chamber. \
                     They make you watch the same boring videos, over and over. :zzz:"
                     )
-        st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
+        st.markdown("Instead, YAME's algorithm takes you on a journey. YAME makes entertainment fun, again. :fire:")
         st.markdown("Click the arrow on the left to refine your suggestions :arrow_forward:")
         st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/). And save this app to your phone? :iphone:")
 
         image = Image.open("./asset/save_to_phone.jpeg")
         st.image(image)
 
-        st.markdown("YAMR is built by Ian Xiao. \
+        st.markdown("YAME is built by Ian Xiao. \
                     You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                     [Medium](https://medium.com/@ianxiao), \
                     and [Twitter](https://twitter.com/ian_xxiao).")
@@ -152,7 +152,7 @@ def main():
 
     st.markdown("* * *")
     st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/).")
-    st.markdown("YAMR is built by Ian Xiao. \
+    st.markdown("YAME is built by Ian Xiao. \
                 You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                 [Medium](https://medium.com/@ianxiao), \
                 and [Twitter](https://twitter.com/ian_xxiao).")
