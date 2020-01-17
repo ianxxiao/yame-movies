@@ -107,6 +107,7 @@ def main():
     add_genre_selector = st.sidebar.multiselect(label="Pick the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
+    st.markdown("* * *")
     st.subheader(f"5 Movies from {add_year_selector[0]} to {add_year_selector[1]}. Just for You.")
 
     # Filter Data
