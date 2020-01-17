@@ -126,7 +126,7 @@ def main():
             .reset_index()
 
     except ValueError:
-        st.text("Hmm. Can't find any movie according to your selection. Here are some other movies you may like.")
+        st.text("Hmm. Can't find any movie based on your choice. Here are something else you may like.")
         data = p_movies.sample(5)
 
     try:
