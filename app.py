@@ -93,7 +93,7 @@ def main():
                     )
         st.markdown("Instead, YARM's algorithm takes you on a journey. YARM makes entertainment fun, again. :fire:")
         st.markdown("Click the arrow on the left to refine your suggestions :arrow_forward:")
-        st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/). And save this app to your phone? :heart_eyes:")
+        st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/). And save this app to your phone? :iphone:")
 
         image = Image.open("./asset/save_to_phone.jpeg")
         st.image(image)
@@ -138,11 +138,11 @@ def main():
 
     st.button("Meh. Show Me Something Else.", key=1)
 
-    st.subheader("Some Trailers")
     for title in data['title']:
         search_term = title + "trailer"
         results = YoutubeSearch(title, max_results=1).to_dict()
         try:
+            st.subheader(title)
             st.video('https://www.youtube.com'+results[0]['link'])
 
         except IndexError:
