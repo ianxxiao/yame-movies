@@ -84,14 +84,14 @@ def main():
     # Set Up the Layout
     st.title("Yet Another Movie Recommender")
 
-    add_year_selector = st.sidebar.slider(label="Select Year Range",
+    add_year_selector = st.sidebar.slider(label="Pick the Year",
                                           min_value=get_min_max_year(p_movies.year)[0],
                                           max_value=get_min_max_year(p_movies.year)[1],
                                           value=(get_min_max_year(p_movies.year)[1] - 20,
                                                  get_min_max_year(p_movies.year)[1]),
                                           step=1)
 
-    add_genre_selector = st.sidebar.multiselect(label="Select the Genre (default to any)",
+    add_genre_selector = st.sidebar.multiselect(label="Pick the Genre (default to any)",
                                                 options=get_genre_set(p_movies.genres))
 
     st.subheader(f"Your Movie Suggestions from {add_year_selector[0]} to {add_year_selector[1]}")
@@ -100,7 +100,7 @@ def main():
     data = p_movies.loc[(p_movies['year'] >= add_year_selector[0]) &
                 (p_movies['year'] <= add_year_selector[1]) &
                 (isin_genres(p_movies['genres_set'], set(add_genre_selector)))]\
-        .sample(int(5))\
+        .sample(5)\
         .sort_values("year", ascending=False)\
         .reset_index()
 
