@@ -132,12 +132,16 @@ def main():
     for title in data['title']:
         search_term = title + "trailer"
         results = YoutubeSearch(title, max_results=1).to_dict()
-        st.video('https://www.youtube.com'+results[0]['link'])
+        try:
+            st.video('https://www.youtube.com'+results[0]['link'])
+
+        except IndexError:
+            st.text(f"Hm. We can't find any tailor for {title}. Click button below to find something else.")
 
     st.button("Meh. Show Me Something Else.", key=2)
 
     st.markdown("* * *")
-    st.markdown("Follow Us on [Instagram](https://www.instagram.com/yamr_movie/).")
+    st.markdown("Follow us on [Instagram](https://www.instagram.com/yamr_movie/).")
     st.markdown("YAMR is built by Ian Xiao. \
                 You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                 [Medium](https://medium.com/@ianxiao), \
