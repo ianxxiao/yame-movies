@@ -96,7 +96,7 @@ def get_youtube_url(title):
     search_term = title + "trailer"
     results = YoutubeSearch(search_term, max_results=1).to_dict()
 
-    if results[0]['link']:
+    if results:
         return 'https://www.youtube.com' + results[0]['link']
 
     else:
