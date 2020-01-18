@@ -9,10 +9,12 @@ from helper.data_processing import get_data
 def main():
 
     # Load Data
-    p_links, p_movies, p_rating, movie_rating_avg_cnt = get_data(get_all=True)
+    p_links, p_movies, p_rating, movie_rating_avg_cnt = get_data(return_all=True)
 
     st.dataframe(p_movies)
     st.text("Unique Movie ID: " + str(len(p_movies['movieId'].value_counts())))
+
+    st.dataframe(p_rating)
 
 
 if __name__ == '__main__':

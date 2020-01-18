@@ -9,7 +9,8 @@ from helper.lookup import get_min_max_year, get_genre_set, isin_genres
 def main():
 
     # Load Data
-    final_movie_df = get_data()
+    final_movie_df, final_rating_df = get_data()
+    max_rating = final_rating_df['rating'].max()
 
     # Set Up the Layout
     st.title("Yet Another Movie Explorer")
@@ -50,6 +51,7 @@ def main():
         st.table(data[['title', 'genres']])
 
     st.button("Meh. Show Me Something Else.", key=1)
+    st.markdown("***")
 
     # Get Youtube Trailers
     for title in data['title']:
@@ -57,8 +59,13 @@ def main():
         results = YoutubeSearch(search_term, max_results=1).to_dict()
         try:
             st.subheader(title)
-            st.text(data[data.title == title]['avg_rating'].values[0])
             st.video('https://www.youtube.com' + results[0]['link'])
+
+            avg_rating = data[data.title == title]['avg_rating'].values[0]
+            review_cnt = data[data.title == title]['review_cnt'].values[0]
+            st.text(f"Average Score: {avg_rating: .1f} out of {max_rating}")
+            st.text(f"Numbers of Reviews: {review_cnt}")
+
             st.markdown("***")
 
         except IndexError:

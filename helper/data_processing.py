@@ -29,7 +29,7 @@ def get_data(return_all=False):
     final_movie_df = p_movies.copy().merge(movie_rating_avg_cnt.copy(), on='movieId', how='left')
 
     if not return_all:
-        return final_movie_df.copy()
+        return final_movie_df.copy(), p_rating.copy()
     else:
         return p_links.copy(), p_movies.copy(), p_rating.copy(), movie_rating_avg_cnt.copy()
 
