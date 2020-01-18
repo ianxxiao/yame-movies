@@ -1,5 +1,6 @@
 from helper.data_processing import get_data
 import argparse
+import logging
 
 # Setup Argument Parser
 parser = argparse.ArgumentParser()
@@ -13,7 +14,7 @@ args = parser.parse_args()
 def main():
 
     # This is a one time pre-processing workflow to get YouTube links
-    print(f"{args.sample}")
+    logging.info(f"batch process {args.sample*100} % of the data ...")
     final_movie_df, final_rating_df = get_data(sample_frac=args.sample)
     final_movie_df.to_csv("./data/final_movie_df.csv")
     final_rating_df.to_csv("./data/final_rating_df.csv")
