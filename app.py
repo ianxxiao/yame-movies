@@ -53,8 +53,6 @@ def main():
     st.button("Meh. Show Me Something Else.", key=1)
     st.markdown("***")
 
-    st.dataframe(final_movie_df.sample(5))
-
     # Show Youtube Trailers
     for title in data['title']:
 
