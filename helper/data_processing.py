@@ -6,6 +6,7 @@ from youtube_search import YoutubeSearch
 from time import sleep
 from random import randint
 import streamlit as st
+import logging
 
 
 @st.cache(persist=True)
@@ -34,6 +35,7 @@ def get_data(return_all=False, sample_frac=1.0):
 
     # Create directory and downlaod data if not exist
     if not os.path.isfile('./data/mini_dataset.zip'):
+        logging.info(f'Set up data directory ...')
         os.mkdir('./data')
         urllib.request.urlretrieve(MINI_DATASET_URL, './data/mini_dataset.zip')
 
@@ -41,6 +43,7 @@ def get_data(return_all=False, sample_frac=1.0):
     links = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/links.csv'))
     movies = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/movies.csv'))
     ratings = pd.read_csv(ZipFile('./data/mini_dataset.zip').open('ml-latest-small/ratings.csv'))
+    logging.info(f'complete raw data load ...')
 
     # Process individual datasets
     p_links, p_movies, p_rating = process_data(links, movies, ratings)
@@ -51,7 +54,8 @@ def get_data(return_all=False, sample_frac=1.0):
     # Create Final dataset
     final_movie_df = p_movies.copy().merge(movie_rating_avg_cnt.copy(),
                                            on='movieId', how='left').sample(frac=sample_frac)
-    print(f"{final_movie_df.shape}")
+
+    logging.info(f"start YouTube link search ...")
     final_movie_df['youtube_url'] = final_movie_df['title'].apply(lambda x: get_youtube_url(x))
 
     if not return_all:
@@ -88,7 +92,7 @@ def calc_movie_rating_average(movie, rating):
 def get_youtube_url(title):
 
     sleep(randint(1, 5)/10)
-    print(f"searching for: {title}")
+    logging.info(f"searching for: {title}")
     search_term = title + "trailer"
     results = YoutubeSearch(search_term, max_results=1).to_dict()
 
@@ -96,7 +100,7 @@ def get_youtube_url(title):
         return 'https://www.youtube.com' + results[0]['link']
 
     else:
-        print(f"can't find link for {title}")
+        logging.info(f"can't find link for {title}")
         return None
 
 
