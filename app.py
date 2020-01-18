@@ -2,14 +2,14 @@ import streamlit as st
 
 from youtube_search import YoutubeSearch
 from helper.show_message import show_header_message, show_foot_message
-from helper.data_processing import get_data
+from helper.data_processing import load_data
 from helper.lookup import get_min_max_year, get_genre_set, isin_genres
 
 
 def main():
 
     # Load Data
-    final_movie_df, final_rating_df = get_data()
+    final_movie_df, final_rating_df = load_data()
     max_rating = final_rating_df['rating'].max()
 
     # Set Up the Layout
@@ -53,24 +53,25 @@ def main():
     st.button("Meh. Show Me Something Else.", key=1)
     st.markdown("***")
 
-    # Get Youtube Trailers
-    for title in data['title']:
-        search_term = title + "trailer"
-        results = YoutubeSearch(search_term, max_results=1).to_dict()
-        try:
-            st.subheader(title)
-            st.video('https://www.youtube.com' + results[0]['link'])
+    st.dataframe(final_movie_df.sample(5))
 
-            avg_rating = data[data.title == title]['avg_rating'].values[0]
-            review_cnt = data[data.title == title]['review_cnt'].values[0]
+    # Show Youtube Trailers
+    for title in data['title']:
+
+        st.subheader(title)
+        link = data[data.title == title]['youtube_url'].values[0]
+        avg_rating = data[data.title == title]['avg_rating'].values[0]
+        review_cnt = data[data.title == title]['review_cnt'].values[0]
+
+        if link:
+            st.video(link)
             st.text(f"Average Score: {avg_rating: .1f} out of {max_rating}")
             st.text(f"Numbers of Reviews: {review_cnt}")
 
-            st.markdown("***")
-
-        except IndexError:
+        else:
             st.text(f"Hm. We can't find any tailor for {title}. Click button below to find something else.")
-            st.markdown("***")
+
+        st.markdown("***")
 
     st.button("Meh. Show Me Something Else.", key=2)
 

@@ -2,12 +2,35 @@ import pandas as pd
 from zipfile import ZipFile
 import urllib.request, os
 from helper.config import MINI_DATASET_URL
+from youtube_search import YoutubeSearch
+from time import sleep
+from random import randint
 import streamlit as st
 
 
-# Persist to disk so the web-app doesn't re-load when a user refresh the browser
 @st.cache(persist=True)
-def get_data(return_all=False):
+def load_data():
+    # Create directory and downlaod data if not exist
+    if not os.path.isfile('./data/mini_dataset.zip'):
+        os.mkdir('./data')
+        urllib.request.urlretrieve(MINI_DATASET_URL, './data/mini_dataset.zip')
+        print("raw data does not exist. Initiate data ...")
+        get_data()
+
+    final_movie_df = pd.read_csv("./data/final_movie_df.csv")
+    final_rating_df = pd.read_csv("./data/final_rating_df.csv")
+
+    return final_movie_df, final_rating_df
+
+
+def get_data(return_all=False, sample_frac=1.0):
+
+    """
+    This is the one time batch process to download data, clean, and look up YouTube links.
+    Return:
+        final_movie_df: a dataframe with all details for a movie
+        final_movie_rating_df: a dataframe with user_level movie rating
+    """
 
     # Create directory and downlaod data if not exist
     if not os.path.isfile('./data/mini_dataset.zip'):
@@ -26,7 +49,10 @@ def get_data(return_all=False):
     movie_rating_avg_cnt = calc_movie_rating_average(p_movies, p_rating)
 
     # Create Final dataset
-    final_movie_df = p_movies.copy().merge(movie_rating_avg_cnt.copy(), on='movieId', how='left')
+    final_movie_df = p_movies.copy().merge(movie_rating_avg_cnt.copy(),
+                                           on='movieId', how='left').sample(frac=sample_frac)
+    print(f"{final_movie_df.shape}")
+    final_movie_df['youtube_url'] = final_movie_df['title'].apply(lambda x: get_youtube_url(x))
 
     if not return_all:
         return final_movie_df.copy(), p_rating.copy()
@@ -57,6 +83,21 @@ def calc_movie_rating_average(movie, rating):
     avg_movie_rating.columns = ['movieId', 'avg_rating', 'review_cnt']
 
     return avg_movie_rating
+
+
+def get_youtube_url(title):
+
+    sleep(randint(1, 5)/10)
+    print(f"searching for: {title}")
+    search_term = title + "trailer"
+    results = YoutubeSearch(search_term, max_results=1).to_dict()
+
+    if results[0]['link']:
+        return 'https://www.youtube.com' + results[0]['link']
+
+    else:
+        print(f"can't find link for {title}")
+        return None
 
 
 def cast_int(value):
