@@ -14,11 +14,14 @@ jobs:
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
-
-    working_directory: ~/streamlit-recommendation
-
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      # DLC will explicitly cache layers here and try to avoid rebuilding.
+      - run: docker build .
+
+    working_directory: ~/streamlit-recommendation
 
       # Download and cache dependencies
       - restore_cache:
