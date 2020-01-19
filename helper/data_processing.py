@@ -11,12 +11,6 @@ import logging
 
 @st.cache(persist=True)
 def load_data():
-    # Create directory and downlaod data if not exist
-    if not os.path.isfile('./data/mini_dataset.zip'):
-        os.mkdir('./data')
-        urllib.request.urlretrieve(MINI_DATASET_URL, './data/mini_dataset.zip')
-        print("raw data does not exist. Initiate data ...")
-        get_data()
 
     final_movie_df = pd.read_csv("./data/final_movie_df.csv")
     final_rating_df = pd.read_csv("./data/final_rating_df.csv")
