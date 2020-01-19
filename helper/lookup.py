@@ -21,7 +21,7 @@ def isin_genres(df, selected_genres):
     # filter dataframe if there is user input criteria; default to 1 if not.
 
     if selected_genres:
-        df = df.apply(lambda x: 1 if (x >= selected_genres) else 0)
+        df = df.apply(lambda x: 1 if (set(x) >= selected_genres) else 0)
     else:
         df = 1
 
