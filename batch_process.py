@@ -2,6 +2,14 @@ from helper.data_processing import get_data
 import argparse
 import logging
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler('./data/batch_process.log')
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 # Setup Argument Parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--sample', type=float, default=1.0,

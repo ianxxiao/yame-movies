@@ -44,6 +44,3 @@ Thumbs.db
 # sensitive stuff
 /.env
 /.google-cookie
-
-# data
-/data
