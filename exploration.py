@@ -1,20 +1,20 @@
 import streamlit as st
-import pandas as pd
-from zipfile import ZipFile
-import urllib.request, os
-from helper.config import MINI_DATASET_URL
-from helper.data_processing import get_data
+
+from youtube_search import YoutubeSearch
+from helper.show_message import show_header_message, show_foot_message, show_panel, \
+    show_personalized_section, show_trailers
+from helper.data_processing import load_data
+from helper.select_data import select_data
 
 
 def main():
 
     # Load Data
-    p_links, p_movies, p_rating, movie_rating_avg_cnt = get_data(return_all=True)
 
-    st.dataframe(p_movies)
-    st.text("Unique Movie ID: " + str(len(p_movies['movieId'].value_counts())))
-
-    st.dataframe(p_rating)
+    final_movie_df, final_rating_df = load_data()
+    st.dataframe(final_movie_df.sample(10))
+    st.text(final_movie_df[final_movie_df['youtube_url'].isna()].shape)
+    st.button('show something else.')
 
 
 if __name__ == '__main__':

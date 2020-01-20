@@ -15,6 +15,8 @@ def load_data():
     final_movie_df = pd.read_csv("./data/final_movie_df.csv")
     final_rating_df = pd.read_csv("./data/final_rating_df.csv")
 
+    final_movie_df.dropna(subset=['youtube_url'], inplace=True)
+
     return final_movie_df, final_rating_df
 
 

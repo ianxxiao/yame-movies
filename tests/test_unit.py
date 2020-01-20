@@ -3,19 +3,34 @@ sys.path.append('../streamlit-recommendation')
 import pytest
 from helper import data_processing
 from helper import lookup
+import streamlit as st
 
 
 def test_data():
 
-    final_movie_df, final_rating_df = data_processing.load_data()
+    # clear streamlit cache because load_data uses cache decorator
+    from streamlit import caching
+    caching.clear_cache()
 
-    assert final_movie_df.shape[0] > 0
-    assert final_movie_df.shape[1] > 0
-    assert final_rating_df.shape[0] > 0
-    assert final_rating_df.shape[1] > 0
+    df1, df2 = data_processing.load_data()
+
+    assert df1.shape[0] > 0
+    assert df1.shape[1] > 0
+    assert df1[df1['youtube_url'].isna()].shape[0] == 0
+    assert df2.shape[0] > 0
+    assert df2.shape[1] > 0
 
 
 final_movie_df, final_rating_df = data_processing.load_data()
+
+
+@pytest.mark.parametrize("df", [final_movie_df])
+def test_random_selection(df):
+    for i in range(10):
+        data = df.sample(10)
+        link = data['youtube_url'].values[0]
+        assert data.shape[0] == 10
+        assert st.video(link)
 
 
 @pytest.mark.parametrize("df, selected_genres", [(final_movie_df['genres'], 'Documentary'),
@@ -30,6 +45,6 @@ def test_genre_filtering(df, selected_genres):
                                                  (final_movie_df, [2001, 2008])])
 def test_year_filtering(df, selected_years):
 
-    final_movie_df.loc[(df['year'] >= selected_years[0]) & (final_movie_df['year'] <= selected_years[1])]
+    df = df.loc[(df['year'] >= selected_years[0]) & (final_movie_df['year'] <= selected_years[1])]
 
-    assert final_movie_df.shape[0] > 0
+    assert df.shape[0] > 0
