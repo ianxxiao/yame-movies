@@ -23,14 +23,14 @@ def show_header_message():
     if st.button("Click to know more about YAME"):
         st.markdown("YAME means **Y**et **A**nother **M**ovie **E**xplorer. \
                      Algorithms on sites like YouTube or Netflix suck! \
-                     They create an echo chamber. \
+                     They create chambers. \
                      They make you watch the same boring videos, over and over. :zzz:"
                     )
         st.markdown("Instead, YAME's algorithm takes you on a journey. YAME makes entertainment exciting, again. :fire:")
         st.markdown("Click the arrow on the left to refine your suggestions :arrow_forward:")
         st.markdown(f"**Like YAME?** \
                     [Sign up]({GOOGLE_FORM_URL}) to receive weekly suggestions. \
-                     Follow us on [Instagram]({IG_URL}). \
+                     Follow us on [Instagram]({IG_URL}) to see great movie quotes. \
                      Save YAME to your phone so you can use it anytime like any other app. :iphone:")
 
         image = Image.open("./asset/save_to_phone.jpeg")
@@ -46,8 +46,9 @@ def show_foot_message():
 
     st.markdown("* * *")
     st.markdown(f"**Like YAME?** \
-                [Sign up]({GOOGLE_FORM_URL}) to receive weekly suggestions. \
-                Follow us on [Instagram]({IG_URL}). Save YAME to your phone. :iphone:")
+                  [Sign up]({GOOGLE_FORM_URL}) to receive weekly suggestions. \
+                   Follow us on [Instagram]({IG_URL}) to see great movie quotes. \
+                   Save YAME to your phone so you can use it anytime like any other app. :iphone:")
     st.markdown("_YAME is built by Ian Xiao. \
                 You can find him on [LinkedIn](https://www.linkedin.com/in/ianxiao/), \
                 [Medium](https://medium.com/@ianxiao), \
@@ -58,7 +59,7 @@ def show_personalized_section():
 
     st.subheader(f'Your Personalized List.')
     exploration = st.slider(f'How adventurous would you like to be? '
-                  f'(100 - show me something different than the list above)',
+                  f'(100 - show something totally different)',
                   min_value=0, max_value=100, value=50, step=10)
     return exploration
 
