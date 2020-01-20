@@ -29,8 +29,7 @@ def main():
     # Personalization Section
     exploration = show_personalized_section()
     data = select_data(final_movie_df, add_year_selector, add_genre_selector, exploration)
-
-
+    show_trailers(data, max_rating)
 
     # Foot Note
     show_foot_message()
