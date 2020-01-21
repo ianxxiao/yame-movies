@@ -1,16 +1,12 @@
+import sys
+sys.path.append('../streamlit-recommendation')
 import os
 import time
 import gc
 import argparse
-
-import sys
-sys.path.append('../streamlit-recommendation')
-
 import pandas as pd
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
-
-# utils import
 from fuzzywuzzy import fuzz
 from helper import data_processing
 
@@ -20,7 +16,7 @@ class KnnRecommender:
     This is an item-based collaborative filtering recommender with
     KNN implmented by sklearn
     """
-    def __init__(self, path_movies, path_ratings):
+    def __init__(self):
         """
         Recommender requires path to data: movies data and ratings data
         Parameters
@@ -28,8 +24,6 @@ class KnnRecommender:
         path_movies: str, movies data file path
         path_ratings: str, ratings data file path
         """
-        self.path_movies = path_movies
-        self.path_ratings = path_ratings
         self.movie_rating_thres = 0
         self.user_rating_thres = 0
         self.model = NearestNeighbors()
@@ -210,12 +204,19 @@ class KnnRecommender:
         raw_recommends = self._inference(
             self.model, movie_user_mat_sparse, hashmap,
             fav_movie, n_recommendations)
-        # print results
+
+        # print and package results
+        recommendation = []
+        recommendation_df = pd.DataFrame({'title': str(), 'distance': float()})
         reverse_hashmap = {v: k for k, v in hashmap.items()}
+
         print('Recommendations for {}:'.format(fav_movie))
         for i, (idx, dist) in enumerate(raw_recommends):
             print('{0}: {1}, with distance '
                   'of {2}'.format(i+1, reverse_hashmap[idx], dist))
+            recommendation.append((reverse_hashmap[idx], dist))
+
+        return recommendation_df
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -243,9 +244,7 @@ if __name__ == '__main__':
     movie_name = args.movie_name
     top_n = args.top_n
     # initial recommender system
-    recommender = KnnRecommender(
-        os.path.join(data_path, movies_filename),
-        os.path.join(data_path, ratings_filename))
+    recommender = KnnRecommender()
     # set params
     recommender.set_filter_params(50, 50)
     recommender.set_model_params(20, 'brute', 'cosine', -1)
