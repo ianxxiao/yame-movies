@@ -13,7 +13,7 @@ def main():
 
     final_movie_df, final_rating_df = load_data()
     st.dataframe(final_movie_df.sample(10))
-    st.text(final_movie_df[final_movie_df['youtube_url'].isna()].shape)
+    st.dataframe(final_rating_df.sample(10))
     st.button('show something else.')
 
 
