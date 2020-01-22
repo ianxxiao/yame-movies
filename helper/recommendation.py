@@ -256,6 +256,8 @@ class KnnRecommender():
             title = self.recommendations[movie][self.exploration][0]
             title_list.append(title)
 
-        data = self.final_movie_df[self.final_movie_df['title'].isin(title_list)]
+        data = self.final_movie_df[self.final_movie_df['title'].isin(title_list)]\
+                    .sort_values("year", ascending=False)\
+                    .reset_index()
 
         return data
