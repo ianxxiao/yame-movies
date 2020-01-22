@@ -3,6 +3,7 @@ sys.path.append('../streamlit-recommendation')
 import pytest
 from helper import data_processing
 from helper import lookup
+from helper.recommendation import get_recomendation
 import streamlit as st
 
 
@@ -48,3 +49,12 @@ def test_year_filtering(df, selected_years):
     df = df.loc[(df['year'] >= selected_years[0]) & (final_movie_df['year'] <= selected_years[1])]
 
     assert df.shape[0] > 0
+
+
+@pytest.mark.parametrize("df, selected_years", [(final_movie_df, 0),
+                                                 (final_movie_df, 10)])
+def test_recommendation(df, exploration):
+    data = df.sample(10)
+    data = get_recomendation(data, final_movie_df, exploration)
+    link = data['youtube_url'].values[0]
+    assert st.video(link)
