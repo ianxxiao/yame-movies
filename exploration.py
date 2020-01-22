@@ -21,12 +21,13 @@ def main():
     st.header("prototype Smart Exploration")
     exploration = st.slider(f'How adventurous would you like to be? '
                   f'(100 - show something totally different)',
-                  min_value=0, max_value=100, value=50, step=10)
+                  min_value=0, max_value=10, value=5, step=1)
 
     # set up recommender
-    recommender = recommendation.KnnRecommender()
-    reco = recommender.make_recommendations('The Imitation Game (2014)', 20)
-    st.dataframe(reco)
+    recommender = recommendation.KnnRecommender(['The Imitation Game (2014)',
+                                                 'Shutter Island (2010)'], exploration)
+    recommender.make_recommendations(11)
+    st.dataframe(recommender.get_recommendations())
 
 
 if __name__ == '__main__':

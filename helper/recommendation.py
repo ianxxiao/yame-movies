@@ -11,12 +11,12 @@ from fuzzywuzzy import fuzz
 from helper import data_processing
 
 
-class KnnRecommender:
+class KnnRecommender():
     """
     This is an item-based collaborative filtering recommender with
     KNN implmented by sklearn
     """
-    def __init__(self):
+    def __init__(self, movie_set, exploration):
         """
         Recommender requires path to data: movies data and ratings data
         Parameters
@@ -29,6 +29,9 @@ class KnnRecommender:
         self.model = NearestNeighbors()
         self.set_filter_params(1, 1)
         self.set_model_params(20, 'brute', 'cosine', -1)
+        self.recommendations = {}
+        self.movie_set = movie_set
+        self.exploration = exploration
 
     def set_filter_params(self, movie_rating_thres, user_rating_thres):
         """
@@ -188,7 +191,7 @@ class KnnRecommender:
         # return recommendation (movieId, distance)
         return raw_recommends
 
-    def make_recommendations(self, fav_movie, n_recommendations):
+    def make_recommendations(self, n_recommendations):
         """
         make top n movie recommendations
         Parameters
@@ -198,38 +201,42 @@ class KnnRecommender:
         """
         # get data
         movie_user_mat_sparse, hashmap = self._prep_data()
+
         # get recommendations
-        raw_recommends = self._inference(
-            self.model, movie_user_mat_sparse, hashmap,
-            fav_movie, n_recommendations)
+        for fav_movie in self.movie_set:
+            raw_recommends = self._inference(
+                self.model, movie_user_mat_sparse, hashmap,
+                fav_movie, n_recommendations)
 
-        # print and package results
-        recommendation = {'title': [], 'distance': []}
-        reverse_hashmap = {v: k for k, v in hashmap.items()}
+            raw_recommends = sorted(raw_recommends, key=lambda x: x[1])
 
-        print('Recommendations for {}:'.format(fav_movie))
-        for i, (idx, dist) in enumerate(raw_recommends):
-            print('{0}: {1}, with distance '
-                  'of {2}'.format(i+1, reverse_hashmap[idx], dist))
-            recommendation['title'].append(reverse_hashmap[idx])
-            recommendation['distance'].append(dist)
+            # print and package results
+            recommendations = []
+            reverse_hashmap = {v: k for k, v in hashmap.items()}
 
-        reco_df = pd.DataFrame.from_dict(recommendation)
+            print('Recommendations for {}:'.format(fav_movie))
+            for i, (idx, dist) in enumerate(raw_recommends):
+                print('{0}: {1}, with distance '
+                      'of {2}'.format(i+1, reverse_hashmap[idx], dist))
+                recommendations.append((reverse_hashmap[idx], dist))
+
+            self.recommendations[fav_movie] = recommendations
+
+
+    def get_recommendations(self):
+
+        '''
+        returns 5 recommendations based on user input exploration level
+        :return: data frame of movie title and distance
+        '''
+
+        dict = {"title": [], "dist": []}
+        for movie in self.movie_set:
+            title = self.recommendations[movie][self.exploration][0]
+            distance = self.recommendations[movie][self.exploration][1]
+            dict['title'].append(title)
+            dict['dist'].append(distance)
+
+        reco_df = pd.DataFrame.from_dict(dict)
 
         return reco_df
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        prog="Movie Recommender",
-        description="Run KNN Movie Recommender")
-    parser.add_argument('--path', nargs='?', default='./data/',
-                        help='input data path')
-    parser.add_argument('--movies_filename', nargs='?', default='final_movie_df.csv',
-                        help='provide movies filename')
-    parser.add_argument('--ratings_filename', nargs='?', default='final_ratings_df.csv',
-                        help='provide ratings filename')
-    parser.add_argument('--movie_name', nargs='?', default='',
-                        help='provide your favoriate movie name')
-    parser.add_argument('--top_n', type=int, default=10,
-                        help='top n movie recommendations')
-    return parser.parse_args()
