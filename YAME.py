@@ -30,6 +30,7 @@ def main():
     exploration = show_personalized_section()
     try:
         data = get_recomendation(data, final_movie_df, final_rating_df, exploration)
+        st.table(data[['title', 'genres']].reset_index())
         show_trailers(data, max_rating)
     except KeyError or IndexError:
         # fail safe solution
