@@ -130,7 +130,11 @@ class KnnRecommender():
 
     def _idx_lookup(self, hashmap, fav_movie):
 
-        return hashmap.get(fav_movie)
+        if  hashmap.get(fav_movie):
+            return hashmap.get(fav_movie)
+        else:
+            return hashmap.popitem()[1]
+
 
     def _fuzzy_matching(self, hashmap, fav_movie):
         """
