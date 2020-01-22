@@ -129,8 +129,8 @@ class KnnRecommender():
         return movie_user_mat_sparse, hashmap
 
     def _idx_lookup(self, hashmap, fav_movie):
-
-        if  hashmap.get(fav_movie):
+        idx = hashmap.get(fav_movie)
+        if idx:
             return hashmap.get(fav_movie)
         else:
             return hashmap.popitem()[1]
