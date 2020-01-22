@@ -5,7 +5,7 @@ from helper.show_message import show_header_message, show_foot_message, show_pan
     show_personalized_section, show_trailers
 from helper.data_processing import load_data
 from helper.select_data import select_data
-
+from helper.recommendation import get_recomendation
 
 def main():
 
@@ -28,7 +28,7 @@ def main():
 
     # Personalization Section
     exploration = show_personalized_section()
-    data = select_data(final_movie_df, add_year_selector, add_genre_selector, exploration)
+    data = get_recomendation(data, final_movie_df, exploration)
     show_trailers(data, max_rating)
 
     # Foot Note
