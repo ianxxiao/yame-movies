@@ -6,7 +6,7 @@ from helper.show_message import show_header_message, show_foot_message, show_pan
 from helper.data_processing import load_data
 from helper.select_data import select_data
 from helper.recommendation import get_recomendation
-
+import logging
 
 def main():
     # Load Data
@@ -28,8 +28,14 @@ def main():
 
     # Personalization Section
     exploration = show_personalized_section()
-    data = get_recomendation(data, final_movie_df, final_rating_df, exploration)
-    show_trailers(data, max_rating)
+    try:
+        data = get_recomendation(data, final_movie_df, final_rating_df, exploration)
+        show_trailers(data, max_rating)
+    except KeyError or IndexError:
+        # fail safe solution
+        logging.warning('SOMETHING WENT WRONG IN RECOMMENDATION. USE FAIL SAFE.')
+        data = select_data(final_movie_df, add_year_selector, add_genre_selector)
+        show_trailers(data, max_rating)
 
     # Foot Note
     show_foot_message()

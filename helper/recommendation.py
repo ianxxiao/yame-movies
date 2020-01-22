@@ -30,6 +30,7 @@ class KnnRecommender():
     This is an item-based collaborative filtering recommender with
     KNN implmented by sklearn
     """
+
     def __init__(self, movie_set, final_movie_df, final_rating_df, exploration):
         """
         Recommender requires path to data: movies data and ratings data
@@ -116,7 +117,7 @@ class KnnRecommender():
         # create mapper from movie title to index
         hashmap = {
             movie: i for i, movie in
-            enumerate(list(df_movies.set_index('movieId').loc[movie_user_mat.index].title)) # noqa
+            enumerate(list(df_movies.set_index('movieId').loc[movie_user_mat.index].title))  # noqa
         }
         # transform matrix to scipy sparse matrix
         movie_user_mat_sparse = csr_matrix(movie_user_mat.values)
@@ -126,7 +127,6 @@ class KnnRecommender():
         del df_ratings, df_ratings_filtered, movie_user_mat
         gc.collect()
         return movie_user_mat_sparse, hashmap
-
 
     def _idx_lookup(self, hashmap, fav_movie):
 
@@ -191,7 +191,7 @@ class KnnRecommender():
         t0 = time.time()
         distances, indices = model.kneighbors(
             data[idx],
-            n_neighbors=n_recommendations+1)
+            n_neighbors=n_recommendations + 1)
         # get list of raw idx of recommendations
         raw_recommends = \
             sorted(
@@ -235,15 +235,14 @@ class KnnRecommender():
             for i, (idx, dist) in enumerate(raw_recommends):
                 try:
                     print('{0}: {1}, with distance '
-                          'of {2}'.format(i+1, reverse_hashmap[idx], dist))
+                          'of {2}'.format(i + 1, reverse_hashmap[idx], dist))
                     recommendations.append((reverse_hashmap[idx], dist))
                 except KeyError:
                     print('{0}: {1}, with distance '
-                          'of {2}'.format(i+1, "RANDOM", 99))
+                          'of {2}'.format(i + 1, "RANDOM", 99))
                     recommendations.append((self.final_movie_df.sample(1)['title'].values[0], dist))
 
             self.recommendations[fav_movie] = recommendations
-
 
     def return_recommendations(self):
 
