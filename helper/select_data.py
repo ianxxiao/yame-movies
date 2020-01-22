@@ -15,14 +15,8 @@ def select_data(final_movie_df, add_year_selector, add_genre_selector, explorati
 
     except ValueError:
         st.text("Hmm. Can't find any movie based on your choice. Here are something else you may like.")
-        data = final_movie_df.sample(random_state=int(str(date.today()).replace('-', ''))+exploration)
-
-    # Show data
-    try:
-        st.table(data[['title', 'genres']])
-
-    except ValueError:
-        st.write(f"Not enough results. Here are all.")
-        st.table(data[['title', 'genres']])
+        data = final_movie_df.sample(5, random_state=int(str(date.today()).replace('-', ''))+exploration)\
+                            .sort_values("year", ascending=False) \
+                            .reset_index()
 
     return data

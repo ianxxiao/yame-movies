@@ -66,6 +66,9 @@ def show_personalized_section():
 
 def show_trailers(data, max_rating):
 
+    # Show Table
+    st.table(data[['title', 'genres']])
+
     # Show Youtube Trailers
     for title in data['title']:
 
