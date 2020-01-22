@@ -11,12 +11,25 @@ from fuzzywuzzy import fuzz
 from helper import data_processing
 
 
+def get_recomendation(movie_set, final_movie_df, exploration):
+    '''
+    driver function to get recommendation based on a set of movies and user define exploration
+    :return: a data frame of movie and youtube url
+    '''
+
+    recommender = KnnRecommender(movie_set['title'].tolist(), exploration, final_movie_df)
+    recommender.make_recommendations(11)
+    data = recommender.return_recommendations()
+
+    return data
+
+
 class KnnRecommender():
     """
     This is an item-based collaborative filtering recommender with
     KNN implmented by sklearn
     """
-    def __init__(self, movie_set, exploration):
+    def __init__(self, movie_set, exploration, final_movie_df):
         """
         Recommender requires path to data: movies data and ratings data
         Parameters
@@ -32,6 +45,7 @@ class KnnRecommender():
         self.recommendations = {}
         self.movie_set = movie_set
         self.exploration = exploration
+        self.final_movie_df = final_movie_df
 
     def set_filter_params(self, movie_rating_thres, user_rating_thres):
         """
@@ -223,20 +237,20 @@ class KnnRecommender():
             self.recommendations[fav_movie] = recommendations
 
 
-    def get_recommendations(self):
+    def return_recommendations(self):
 
         '''
         returns 5 recommendations based on user input exploration level
         :return: data frame of movie title and distance
         '''
 
-        dict = {"title": [], "dist": []}
+        title_list = []
         for movie in self.movie_set:
             title = self.recommendations[movie][self.exploration][0]
-            distance = self.recommendations[movie][self.exploration][1]
-            dict['title'].append(title)
-            dict['dist'].append(distance)
+            title_list.append(title)
 
-        reco_df = pd.DataFrame.from_dict(dict)
+        data = self.final_movie_df[self.final_movie_df['title'].isin(title_list)]
 
-        return reco_df
+        return data
+
+

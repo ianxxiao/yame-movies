@@ -59,8 +59,8 @@ def show_personalized_section():
 
     st.subheader(f'Your Personalized List.')
     exploration = st.slider(f'How adventurous would you like to be? '
-                  f'(100 - show something totally different)',
-                  min_value=0, max_value=100, value=50, step=10)
+                  f'(10 - show something totally different)',
+                  min_value=0, max_value=10, value=5, step=1)
     return exploration
 
 
