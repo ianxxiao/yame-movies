@@ -25,11 +25,7 @@ def main():
 
     # set up recommender
     recommender = recommendation.KnnRecommender()
-    recommender.set_filter_params(50, 50)
-    recommender.set_model_params(20, 'brute', 'cosine', -1)
-    reco = recommender.make_recommendations('The Imitation Game (2014)', 10)
-    st.text(type(reco))
-    reco = pd.DataFrame(reco, columns=['title', 'distance'])
+    reco = recommender.make_recommendations('The Imitation Game (2014)', 20)
     st.dataframe(reco)
 
 

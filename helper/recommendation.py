@@ -27,6 +27,8 @@ class KnnRecommender:
         self.movie_rating_thres = 0
         self.user_rating_thres = 0
         self.model = NearestNeighbors()
+        self.set_filter_params(1, 1)
+        self.set_model_params(20, 'brute', 'cosine', -1)
 
     def set_filter_params(self, movie_rating_thres, user_rating_thres):
         """
@@ -74,15 +76,6 @@ class KnnRecommender:
         df_ratings = df_ratings[['userId', 'movieId', 'rating']]
         df_ratings.astype({'userId': 'int32', 'movieId': 'int32', 'rating': 'float32'})
 
-        # df_movies = pd.read_csv(
-        #     os.path.join(self.path_movies),
-        #     usecols=['movieId', 'title'],
-        #     dtype={'movieId': 'int32', 'title': 'str'})
-        # df_ratings = pd.read_csv(
-        #     os.path.join(self.path_ratings),
-        #     usecols=['userId', 'movieId', 'rating'],
-        #     dtype={'userId': 'int32', 'movieId': 'int32', 'rating': 'float32'})
-        # filter data
         df_movies_cnt = pd.DataFrame(
             df_ratings.groupby('movieId').size(),
             columns=['count'])
@@ -113,6 +106,11 @@ class KnnRecommender:
         del df_ratings, df_ratings_filtered, movie_user_mat
         gc.collect()
         return movie_user_mat_sparse, hashmap
+
+    def _idx_lookup(self, hashmap, fav_movie):
+
+        return hashmap.get(fav_movie)
+
 
     def _fuzzy_matching(self, hashmap, fav_movie):
         """
@@ -166,7 +164,7 @@ class KnnRecommender:
         model.fit(data)
         # get input movie index
         print('You have input movie:', fav_movie)
-        idx = self._fuzzy_matching(hashmap, fav_movie)
+        idx = self._idx_lookup(hashmap, fav_movie)
         # inference
         print('Recommendation system start to make inference')
         print('......\n')
@@ -206,17 +204,19 @@ class KnnRecommender:
             fav_movie, n_recommendations)
 
         # print and package results
-        recommendation = []
-        recommendation_df = pd.DataFrame({'title': str(), 'distance': float()})
+        recommendation = {'title': [], 'distance': []}
         reverse_hashmap = {v: k for k, v in hashmap.items()}
 
         print('Recommendations for {}:'.format(fav_movie))
         for i, (idx, dist) in enumerate(raw_recommends):
             print('{0}: {1}, with distance '
                   'of {2}'.format(i+1, reverse_hashmap[idx], dist))
-            recommendation.append((reverse_hashmap[idx], dist))
+            recommendation['title'].append(reverse_hashmap[idx])
+            recommendation['distance'].append(dist)
 
-        return recommendation_df
+        reco_df = pd.DataFrame.from_dict(recommendation)
+
+        return reco_df
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -233,20 +233,3 @@ def parse_args():
     parser.add_argument('--top_n', type=int, default=10,
                         help='top n movie recommendations')
     return parser.parse_args()
-
-
-if __name__ == '__main__':
-    # get args
-    args = parse_args()
-    data_path = args.path
-    movies_filename = args.movies_filename
-    ratings_filename = args.ratings_filename
-    movie_name = args.movie_name
-    top_n = args.top_n
-    # initial recommender system
-    recommender = KnnRecommender()
-    # set params
-    recommender.set_filter_params(50, 50)
-    recommender.set_model_params(20, 'brute', 'cosine', -1)
-    # make recommendations
-    recommender.make_recommendations(movie_name, top_n)
