@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../streamlit-recommendation')
+
 import pandas as pd
 from zipfile import ZipFile
 import urllib.request, os

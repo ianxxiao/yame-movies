@@ -7,8 +7,8 @@ from helper.data_processing import load_data
 from helper.select_data import select_data
 from helper.recommendation import get_recomendation
 
-def main():
 
+def main():
     # Load Data
     final_movie_df, final_rating_df = load_data()
     max_rating = final_rating_df['rating'].max()
@@ -28,7 +28,7 @@ def main():
 
     # Personalization Section
     exploration = show_personalized_section()
-    data = get_recomendation(data, final_movie_df, exploration)
+    data = get_recomendation(data, final_movie_df, final_rating_df, exploration)
     show_trailers(data, max_rating)
 
     # Foot Note

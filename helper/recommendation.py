@@ -11,13 +11,14 @@ from fuzzywuzzy import fuzz
 from helper import data_processing
 
 
-def get_recomendation(movie_set, final_movie_df, exploration):
+def get_recomendation(movie_set, final_movie_df, final_rating_df, exploration):
     '''
     driver function to get recommendation based on a set of movies and user define exploration
     :return: a data frame of movie and youtube url
     '''
 
-    recommender = KnnRecommender(movie_set['title'].tolist(), exploration, final_movie_df)
+    recommender = KnnRecommender(movie_set['title'].tolist(), final_movie_df,
+                                 final_rating_df, exploration)
     recommender.make_recommendations(11)
     data = recommender.return_recommendations()
 
@@ -29,7 +30,7 @@ class KnnRecommender():
     This is an item-based collaborative filtering recommender with
     KNN implmented by sklearn
     """
-    def __init__(self, movie_set, exploration, final_movie_df):
+    def __init__(self, movie_set, final_movie_df, final_rating_df, exploration):
         """
         Recommender requires path to data: movies data and ratings data
         Parameters
@@ -40,12 +41,13 @@ class KnnRecommender():
         self.movie_rating_thres = 0
         self.user_rating_thres = 0
         self.model = NearestNeighbors()
-        self.set_filter_params(1, 1)
+        self.set_filter_params(0, 0)
         self.set_model_params(20, 'brute', 'cosine', -1)
         self.recommendations = {}
         self.movie_set = movie_set
         self.exploration = exploration
         self.final_movie_df = final_movie_df
+        self.final_rating_df = final_rating_df
 
     def set_filter_params(self, movie_rating_thres, user_rating_thres):
         """
@@ -85,13 +87,14 @@ class KnnRecommender():
         2. hashmap of movie to row index in movie-user scipy sparse matrix
         """
         # read data
-        df_movies, df_ratings = data_processing.load_data()
+        # df_movies, df_ratings = data_processing.load_data()
+        df_movies = self.final_movie_df[['movieId', 'title']]
+        df_ratings = self.final_rating_df[['userId', 'movieId', 'rating']]
 
-        df_movies = df_movies[['movieId', 'title']]
         df_movies.astype({'movieId': 'int32', 'title': 'str'})
 
-        df_ratings = df_ratings[['userId', 'movieId', 'rating']]
         df_ratings.astype({'userId': 'int32', 'movieId': 'int32', 'rating': 'float32'})
+        df_ratings = df_ratings[df_ratings['movieId'].isin(df_movies['movieId'].tolist())]
 
         df_movies_cnt = pd.DataFrame(
             df_ratings.groupby('movieId').size(),
@@ -124,10 +127,10 @@ class KnnRecommender():
         gc.collect()
         return movie_user_mat_sparse, hashmap
 
+
     def _idx_lookup(self, hashmap, fav_movie):
 
         return hashmap.get(fav_movie)
-
 
     def _fuzzy_matching(self, hashmap, fav_movie):
         """
@@ -230,9 +233,14 @@ class KnnRecommender():
 
             print('Recommendations for {}:'.format(fav_movie))
             for i, (idx, dist) in enumerate(raw_recommends):
-                print('{0}: {1}, with distance '
-                      'of {2}'.format(i+1, reverse_hashmap[idx], dist))
-                recommendations.append((reverse_hashmap[idx], dist))
+                try:
+                    print('{0}: {1}, with distance '
+                          'of {2}'.format(i+1, reverse_hashmap[idx], dist))
+                    recommendations.append((reverse_hashmap[idx], dist))
+                except KeyError:
+                    print('{0}: {1}, with distance '
+                          'of {2}'.format(i+1, "RANDOM", 99))
+                    recommendations.append((self.final_movie_df.sample(1)['title'].values[0], dist))
 
             self.recommendations[fav_movie] = recommendations
 
@@ -252,5 +260,3 @@ class KnnRecommender():
         data = self.final_movie_df[self.final_movie_df['title'].isin(title_list)]
 
         return data
-
-
