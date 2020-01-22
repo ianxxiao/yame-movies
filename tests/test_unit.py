@@ -64,11 +64,11 @@ def test_exploration(df, exploration):
 
 
 @pytest.mark.parametrize("df, year_filter, exploration",
-                         [(final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 0),
-                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 2),
-                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 5),
-                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 8),
-                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 10)])
+                         [(final_movie_df, [randint(1902, 1999), randint(2000, 2018)], randint(0, 10)),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], randint(0, 10)),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], randint(0, 10)),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], randint(0, 10)),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], randint(0, 10))])
 def test_filtering_exploration(df, year_filter, exploration):
     df = df.loc[(df['year'] >= year_filter[0]) &
                 (final_movie_df['year'] <= year_filter[1])]
