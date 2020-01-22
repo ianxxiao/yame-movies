@@ -51,7 +51,7 @@ def test_year_filtering(df, selected_years):
     assert df.shape[0] > 0
 
 
-@pytest.mark.parametrize("df, selected_years", [(final_movie_df, 0),
+@pytest.mark.parametrize("df, exploration", [(final_movie_df, 0),
                                                  (final_movie_df, 10)])
 def test_recommendation(df, exploration):
     data = df.sample(10)
