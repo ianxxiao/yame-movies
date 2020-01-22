@@ -5,7 +5,7 @@ from helper import data_processing
 from helper import lookup
 from helper.recommendation import get_recomendation
 import streamlit as st
-
+from random import randint
 
 def test_data():
 
@@ -42,8 +42,8 @@ def test_genre_filtering(df, selected_genres):
     assert results.sum() > 0
 
 
-@pytest.mark.parametrize("df, selected_years", [(final_movie_df, [1904, 1998]),
-                                                 (final_movie_df, [2001, 2008])])
+@pytest.mark.parametrize("df, selected_years", [(final_movie_df, [randint(1902, 1999), randint(2000, 2018)]),
+                                                 (final_movie_df, [randint(1902, 1999), randint(2000, 2018)])])
 def test_year_filtering(df, selected_years):
 
     df = df.loc[(df['year'] >= selected_years[0]) & (final_movie_df['year'] <= selected_years[1])]
@@ -52,9 +52,27 @@ def test_year_filtering(df, selected_years):
 
 
 @pytest.mark.parametrize("df, exploration", [(final_movie_df, 0),
-                                                 (final_movie_df, 10)])
-def test_recommendation(df, exploration):
-    data = df.sample(10)
-    data = get_recomendation(data, final_movie_df, exploration)
+                                            (final_movie_df, 2),
+                                             (final_movie_df, 5),
+                                             (final_movie_df, 8),
+                                             (final_movie_df, 10)])
+def test_exploration(df, exploration):
+    data = df.sample(20)
+    data = get_recomendation(data, final_movie_df, final_rating_df, exploration)
+    link = data['youtube_url'].values[0]
+    assert st.video(link)
+
+
+@pytest.mark.parametrize("df, year_filter, exploration",
+                         [(final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 0),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 2),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 5),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 8),
+                            (final_movie_df, [randint(1902, 1999), randint(2000, 2018)], 10)])
+def test_filtering_exploration(df, year_filter, exploration):
+    df = df.loc[(df['year'] >= year_filter[0]) &
+                (final_movie_df['year'] <= year_filter[1])]
+    data = df.sample(20)
+    data = get_recomendation(data, final_movie_df, final_rating_df, exploration)
     link = data['youtube_url'].values[0]
     assert st.video(link)
